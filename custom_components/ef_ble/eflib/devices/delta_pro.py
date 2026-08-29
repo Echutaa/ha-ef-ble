@@ -5,6 +5,7 @@ from bleak.backends.device import BLEDevice
 from bleak.backends.scanner import AdvertisementData
 
 from ..devicebase import DeviceBase
+from ..entity import controls
 from ..model import (
     AllKitDetailData,
     DirectBmsMDeltaHeartbeatPack,
@@ -71,6 +72,7 @@ class Device(DeviceBase, RawDataProps):
     ac_input_voltage = raw_field(rd_inv.ac_in_vol, pdiv(1000, 2))
     ac_input_current = raw_field(rd_inv.ac_in_amp, pdiv(1000, 2))
     ac_ports = raw_field(rd_inv.cfg_ac_enabled, lambda x: x == 1)
+    xboost = raw_field(rd_inv.cfg_ac_xboost, lambda x: x == 1)
 
     dc_input_power = raw_field(rd_mppt.in_watts, pdiv(10, 1))
     dc_input_voltage = raw_field(rd_mppt.in_vol, pdiv(10, 1))
@@ -257,14 +259,17 @@ class Device(DeviceBase, RawDataProps):
             raise_on_failure=True,
         )
 
+    @controls.outlet(ac_ports)
     async def enable_ac_ports(self, enabled: bool):
         payload = bytes([1 if enabled else 0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
         await self._send_config_packet(0x04, 0x42, payload)
 
+    @controls.switch(xboost)
     async def enable_xboost(self, enabled: bool):
         payload = bytes([0xFF, 1 if enabled else 0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
         await self._send_config_packet(0x04, 0x42, payload)
 
+    @controls.switch(dc_12v_port)
     async def enable_dc_12v_port(self, enabled: bool):
         await self._send_config_packet(self._mppt_dst, 0x51, enabled.to_bytes())
 
@@ -285,6 +290,7 @@ class Device(DeviceBase, RawDataProps):
         )
         return True
 
+    @controls.switch(energy_backup)
     async def enable_energy_backup(self, enabled: bool):
         backup_level = self.energy_backup_battery_level or 50
         await self.set_energy_backup_battery_level(backup_level, enabled=enabled)

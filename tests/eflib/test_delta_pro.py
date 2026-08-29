@@ -141,6 +141,7 @@ async def test_delta_pro_field_types_are_consistent(device, packet_sequence):
 
     boolean_fields = [
         Device.ac_ports,
+        Device.xboost,
         Device.dc_12v_port,
         Device.energy_backup,
         Device.battery_1_enabled,
@@ -189,6 +190,7 @@ async def test_delta_pro_exact_values_from_known_packets(device, packet_sequence
         Device.ac_input_voltage: 0.0,
         Device.ac_input_current: 0.0,
         Device.ac_ports: True,
+        Device.xboost: False,
         Device.ac_charging_speed: 500,
         Device.ac_charging_power_max: 2900,
         Device.input_power: 0,
