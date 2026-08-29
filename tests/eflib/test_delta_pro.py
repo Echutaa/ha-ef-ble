@@ -148,6 +148,22 @@ async def test_delta_pro_field_types_are_consistent(device, packet_sequence):
         Device.battery_2_enabled,
     ]
 
+    for field_name in (
+        Device.battery_voltage,
+        Device.battery_current,
+        Device.battery_input_power,
+        Device.battery_output_power,
+        Device.cell_temperature,
+        Device.max_cell_voltage,
+        Device.min_cell_voltage,
+        Device.state_of_health,
+    ):
+        value = device.get_value(field_name)
+        if value is not None:
+            assert isinstance(value, (int, float)), (
+                f"BMS field {field_name} has wrong type: {type(value)}"
+            )
+
     for field_name in boolean_fields:
         value = device.get_value(field_name)
         if value is not None:
@@ -205,6 +221,14 @@ async def test_delta_pro_exact_values_from_known_packets(device, packet_sequence
         Device.battery_1_battery_level: 89.85,
         Device.battery_1_sn: "BATPACK001",
         Device.battery_2_enabled: False,
+        Device.battery_voltage: 49.8,
+        Device.battery_current: 0.0,
+        Device.battery_input_power: 0,
+        Device.battery_output_power: 200,
+        Device.cell_temperature: 25,
+        Device.max_cell_voltage: 3.41,
+        Device.min_cell_voltage: 3.38,
+        Device.state_of_health: 98,
     }
 
     for field_name, expected_value in expected.items():

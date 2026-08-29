@@ -28,6 +28,15 @@ rd_mppt = dataclass_attr_mapper(DirectMpptHeartbeatPack)
 rd_kit = dataclass_attr_mapper(AllKitDetailData)
 
 
+def _bms_amps(value: int | None) -> float | None:
+    """Convert BMS raw mA field (uint32, two's-complement) to signed amps."""
+    if value is None:
+        return None
+    if value >= (1 << 31):
+        value -= 1 << 32
+    return round(value / 1000, 3)
+
+
 class Device(DeviceBase, RawDataProps):
     """Delta Pro"""
 
@@ -58,6 +67,15 @@ class Device(DeviceBase, RawDataProps):
     battery_level = raw_field(rd_ems.f32_lcd_show_soc, pround(2))
     battery_charge_limit_min = raw_field(rd_ems.min_dsg_soc)
     battery_charge_limit_max = raw_field(rd_ems.max_charge_soc)
+
+    battery_voltage = raw_field(rd_bms.vol, pdiv(1000, 2))
+    battery_current = raw_field(rd_bms.amp, _bms_amps)
+    battery_input_power = raw_field(rd_bms.input_watts)
+    battery_output_power = raw_field(rd_bms.output_watts)
+    cell_temperature = raw_field(rd_bms.temp)
+    max_cell_voltage = raw_field(rd_bms.max_cell_vol, pdiv(1000, 3))
+    min_cell_voltage = raw_field(rd_bms.min_cell_vol, pdiv(1000, 3))
+    state_of_health = raw_field(rd_bms.soh)
 
     battery_1_enabled = Field[bool]()
     battery_1_battery_level = Field[float]()
