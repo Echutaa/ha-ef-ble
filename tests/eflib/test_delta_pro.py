@@ -130,6 +130,14 @@ async def test_delta_pro_field_types_are_consistent(device, packet_sequence):
         Device.ac_charging_speed,
         Device.energy_backup_battery_level,
         Device.battery_1_battery_level,
+        Device.battery_voltage,
+        Device.battery_current,
+        Device.battery_input_power,
+        Device.battery_output_power,
+        Device.cell_temperature,
+        Device.max_cell_voltage,
+        Device.min_cell_voltage,
+        Device.state_of_health,
     ]
 
     for field_name in numeric_fields:
@@ -147,22 +155,6 @@ async def test_delta_pro_field_types_are_consistent(device, packet_sequence):
         Device.battery_1_enabled,
         Device.battery_2_enabled,
     ]
-
-    for field_name in (
-        Device.battery_voltage,
-        Device.battery_current,
-        Device.battery_input_power,
-        Device.battery_output_power,
-        Device.cell_temperature,
-        Device.max_cell_voltage,
-        Device.min_cell_voltage,
-        Device.state_of_health,
-    ):
-        value = device.get_value(field_name)
-        if value is not None:
-            assert isinstance(value, (int, float)), (
-                f"BMS field {field_name} has wrong type: {type(value)}"
-            )
 
     for field_name in boolean_fields:
         value = device.get_value(field_name)
