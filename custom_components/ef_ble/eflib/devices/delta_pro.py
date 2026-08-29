@@ -100,6 +100,12 @@ class Device(DeviceBase, RawDataProps):
     energy_backup = raw_field(rd_pd.watth_is_config, lambda x: x == 1)
     energy_backup_battery_level = raw_field(rd_pd.backup_soc)
 
+    ac_input_energy = raw_field(rd_pd.chg_power_ac)
+    dc_input_energy = raw_field(rd_pd.chg_power_dc)
+    solar_input_energy = raw_field(rd_pd.chg_sun_power)
+    ac_output_energy = raw_field(rd_pd.dsg_power_ac)
+    dc_output_energy = raw_field(rd_pd.dsg_power_dc)
+
     # beep_mode: 0 = buzzer on, 1 = buzzer off (inverted in protocol)
     # buzzer = raw_field(rd_pd.beep_mode, lambda x: x == 0)
 

@@ -68,6 +68,12 @@
       "dc_input_energy": {
         "default": "mdi:current-dc"
       },
+      "dc_output_energy": {
+        "default": "mdi:current-dc"
+      },
+      "solar_input_energy": {
+        "default": "mdi:solar-power-variant-outline"
+      },
       "dc12v_output_power": {
         "default": "mdi:current-dc"
       },

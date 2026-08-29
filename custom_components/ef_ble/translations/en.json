@@ -608,6 +608,12 @@
       "dc_output_power": {
         "name": "DC Output Power"
       },
+      "dc_output_energy": {
+        "name": "DC Output Energy"
+      },
+      "solar_input_energy": {
+        "name": "Solar Input Energy"
+      },
       "dc12v_output_power": {
         "name": "DC 12V Output Power"
       },

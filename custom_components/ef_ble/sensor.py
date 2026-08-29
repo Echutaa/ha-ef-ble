@@ -741,6 +741,8 @@ _SENSORS: Final[dict[str, SensorEntityDescription]] = {
     "dc_input_power": power(precision=2),
     "dc_input_energy": energy(),
     "dc_output_power": power(precision=2),
+    "dc_output_energy": energy(),
+    "solar_input_energy": energy(),
     "dc12v_output_power": power(precision=2),
     "dc12v_output_energy": energy(),
     "usba_output_power": power(),

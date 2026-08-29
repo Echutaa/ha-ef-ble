@@ -138,6 +138,11 @@ async def test_delta_pro_field_types_are_consistent(device, packet_sequence):
         Device.max_cell_voltage,
         Device.min_cell_voltage,
         Device.state_of_health,
+        Device.ac_input_energy,
+        Device.dc_input_energy,
+        Device.solar_input_energy,
+        Device.ac_output_energy,
+        Device.dc_output_energy,
     ]
 
     for field_name in numeric_fields:
@@ -221,6 +226,11 @@ async def test_delta_pro_exact_values_from_known_packets(device, packet_sequence
         Device.max_cell_voltage: 3.41,
         Device.min_cell_voltage: 3.38,
         Device.state_of_health: 98,
+        Device.ac_input_energy: 0,
+        Device.dc_input_energy: 0,
+        Device.solar_input_energy: 0,
+        Device.ac_output_energy: 0,
+        Device.dc_output_energy: 200,
     }
 
     for field_name, expected_value in expected.items():
