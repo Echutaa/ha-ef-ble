@@ -389,8 +389,8 @@
       "fan_running": {
         "name": "Fan Running"
       },
-      "inverter_running": {
-        "name": "Inverter Running"
+      "ac_output_active": {
+        "name": "AC Output Active"
       },
       "gfci_disabled": {
         "name": "GFCI Disabled"

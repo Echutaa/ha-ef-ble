@@ -137,8 +137,8 @@ _BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
         state_attribute_fields=["error_code"],
     ),
     "bms_run_state": power(enabled=False, entity_category=EntityCategory.DIAGNOSTIC),
-    "inverter_running": _make_desc(
-        BinarySensorDeviceClass.RUNNING,
+    "ac_output_active": _make_desc(
+        BinarySensorDeviceClass.POWER,
         state_attribute_fields=["error_code"],
     ),
     "gfci_disabled": problem(enabled=False, entity_category=EntityCategory.DIAGNOSTIC),

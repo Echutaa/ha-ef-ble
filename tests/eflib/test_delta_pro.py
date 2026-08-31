@@ -167,7 +167,7 @@ async def test_delta_pro_field_types_are_consistent(device, packet_sequence):
         Device.battery_1_enabled,
         Device.battery_2_enabled,
         Device.fan_running,
-        Device.inverter_running,
+        Device.ac_output_active,
         Device.gfci_disabled,
         Device.error_occurred,
     ]
@@ -251,7 +251,7 @@ async def test_delta_pro_exact_values_from_known_packets(device, packet_sequence
         Device.fan_running: False,
         Device.error_code: 0,
         Device.error_occurred: False,
-        Device.inverter_running: True,
+        Device.ac_output_active: True,  # fixture inv_out_vol=230000 → > 0
         Device.gfci_disabled: True,
     }
 

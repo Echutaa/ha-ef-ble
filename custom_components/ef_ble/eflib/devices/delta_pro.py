@@ -93,7 +93,9 @@ class Device(DeviceBase, RawDataProps):
     fan_running = raw_field(rd_inv.fan_state, lambda x: x == 1)
 
     error_code = raw_field(rd_inv.err_code)
-    inverter_running = raw_field(rd_inv.cfg_pause_flag, lambda x: x != 1)
+    ac_output_active = raw_field(
+        rd_inv.inv_out_vol, lambda x: None if x is None else x > 0
+    )
     gfci_disabled = raw_field(rd_inv.cfg_gfci_enable, lambda x: x == 0)
 
     @computed_field

@@ -42,10 +42,10 @@
           "off": "mdi:alert-circle-outline"
         }
       },
-      "inverter_running": {
+      "ac_output_active": {
         "default": "mdi:sine-wave",
         "state": {
-          "off": "mdi:pause-octagon"
+          "off": "mdi:power-plug-off"
         }
       },
       "gfci_disabled": {
