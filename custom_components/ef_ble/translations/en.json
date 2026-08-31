@@ -389,6 +389,12 @@
       "fan_running": {
         "name": "Fan Running"
       },
+      "inverter_running": {
+        "name": "Inverter Running"
+      },
+      "gfci_disabled": {
+        "name": "GFCI Disabled"
+      },
       "storm_mode": {
         "name": "Storm Mode"
       },
@@ -589,6 +595,15 @@
       },
       "ac_output_current": {
         "name": "AC Output Current"
+      },
+      "ac_input_frequency": {
+        "name": "AC Input Frequency"
+      },
+      "ac_output_frequency": {
+        "name": "AC Output Frequency"
+      },
+      "dc_input_temperature": {
+        "name": "DC Input Temperature"
       },
       "ac_input_energy": {
         "name": "AC Input Energy"

@@ -41,6 +41,18 @@
         "state": {
           "off": "mdi:alert-circle-outline"
         }
+      },
+      "inverter_running": {
+        "default": "mdi:sine-wave",
+        "state": {
+          "off": "mdi:pause-octagon"
+        }
+      },
+      "gfci_disabled": {
+        "default": "mdi:shield-off",
+        "state": {
+          "off": "mdi:shield-check"
+        }
       }
     },
     "sensor": {

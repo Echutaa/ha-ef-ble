@@ -143,6 +143,13 @@ async def test_delta_pro_field_types_are_consistent(device, packet_sequence):
         Device.solar_input_energy,
         Device.ac_output_energy,
         Device.dc_output_energy,
+        Device.ac_output_voltage,
+        Device.ac_output_current,
+        Device.ac_output_frequency,
+        Device.ac_input_frequency,
+        Device.inverter_temperature,
+        Device.dc_input_temperature,
+        Device.error_code,
     ]
 
     for field_name in numeric_fields:
@@ -159,6 +166,10 @@ async def test_delta_pro_field_types_are_consistent(device, packet_sequence):
         Device.energy_backup,
         Device.battery_1_enabled,
         Device.battery_2_enabled,
+        Device.fan_running,
+        Device.inverter_running,
+        Device.gfci_disabled,
+        Device.error_occurred,
     ]
 
     for field_name in boolean_fields:
@@ -231,6 +242,17 @@ async def test_delta_pro_exact_values_from_known_packets(device, packet_sequence
         Device.solar_input_energy: 0,
         Device.ac_output_energy: 0,
         Device.dc_output_energy: 200,
+        Device.ac_output_voltage: 230.0,
+        Device.ac_output_current: 0.9,
+        Device.ac_output_frequency: 50,
+        Device.ac_input_frequency: 0,
+        Device.inverter_temperature: 0,
+        Device.dc_input_temperature: 0,
+        Device.fan_running: False,
+        Device.error_code: 0,
+        Device.error_occurred: False,
+        Device.inverter_running: True,
+        Device.gfci_disabled: True,
     }
 
     for field_name, expected_value in expected.items():

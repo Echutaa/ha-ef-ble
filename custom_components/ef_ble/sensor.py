@@ -736,6 +736,15 @@ _SENSORS: Final[dict[str, SensorEntityDescription]] = {
     "ac_output_power": power(precision=2),
     "ac_output_voltage": voltage(precision=2, enabled=False),
     "ac_output_current": current(precision=2, enabled=False),
+    "ac_input_frequency": frequency(
+        enabled=False, entity_category=EntityCategory.DIAGNOSTIC
+    ),
+    "ac_output_frequency": frequency(
+        enabled=False, entity_category=EntityCategory.DIAGNOSTIC
+    ),
+    "dc_input_temperature": temperature(
+        enabled=False, entity_category=EntityCategory.DIAGNOSTIC
+    ),
     "ac_input_energy": energy(),
     "ac_output_energy": energy(),
     "dc_input_power": power(precision=2),

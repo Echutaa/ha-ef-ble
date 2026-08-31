@@ -15,7 +15,7 @@ from ..model import (
     DirectPdHeartbeatPack,
 )
 from ..packet import Packet
-from ..props import Field
+from ..props import Field, computed_field
 from ..props.raw_data_field import dataclass_attr_mapper, raw_field
 from ..props.raw_data_props import RawDataProps
 from ..props.transforms import pdiv, pround
@@ -82,6 +82,23 @@ class Device(DeviceBase, RawDataProps):
     ac_input_current = raw_field(rd_inv.ac_in_amp, pdiv(1000, 2))
     ac_ports = raw_field(rd_inv.cfg_ac_enabled, lambda x: x == 1)
     xboost = raw_field(rd_inv.cfg_ac_xboost, lambda x: x == 1)
+
+    ac_output_voltage = raw_field(rd_inv.inv_out_vol, pdiv(1000, 2))
+    ac_output_current = raw_field(rd_inv.inv_out_amp, pdiv(1000, 2))
+    ac_output_frequency = raw_field(rd_inv.inv_out_freq)
+    ac_input_frequency = raw_field(rd_inv.ac_in_freq)
+
+    inverter_temperature = raw_field(rd_inv.out_temp)
+    dc_input_temperature = raw_field(rd_inv.dc_in_temp)
+    fan_running = raw_field(rd_inv.fan_state, lambda x: x == 1)
+
+    error_code = raw_field(rd_inv.err_code)
+    inverter_running = raw_field(rd_inv.cfg_pause_flag, lambda x: x != 1)
+    gfci_disabled = raw_field(rd_inv.cfg_gfci_enable, lambda x: x == 0)
+
+    @computed_field
+    def error_occurred(self) -> bool:
+        return bool(self.error_code)
 
     dc_input_power = raw_field(rd_mppt.in_watts, pdiv(10, 1))
     dc_input_voltage = raw_field(rd_mppt.in_vol, pdiv(10, 1))
