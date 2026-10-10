@@ -192,7 +192,40 @@ async def async_setup_entry(hass: HomeAssistant, entry: DeviceConfigEntry) -> bo
                 "attempts": str(e.attempts),
             },
         )
-        raise ConfigEntryError(
+        # LOCAL PATCH. Written against stock 1.1.1, carried forward to 1.2.1 (current).
+        #
+        # RE-APPLY AND RE-VERIFY ON EVERY ef_ble UPGRADE. This is a hand edit to a HACS
+        # component: an update silently reverts it, and nothing detects its absence -
+        # the marker sensor only fires when the patch RUNS, never when it is missing.
+        #
+        # WHAT IT DOES: upstream raises ConfigEntryError here, which HA treats as
+        # permanently failed and never retries. This raises ConfigEntryNotReady instead,
+        # so HA retries on its backoff, min(2**tries * 5, 600)s, capped at 10 min.
+        #
+        # WHY: proven necessary 2026-09-04 - reconnect attempts were exhausted at 21:48
+        # and the link self-recovered at 22:18 only because HA kept retrying. Under stock
+        # it would have stopped dead at 21:48. Covers the class the 1.1.1 auth fix cannot:
+        # device genuinely unreachable (powered off, out of range, adapter contention).
+        #
+        # DO NOT drop this because the marker log is empty. An empty log means the guarded
+        # scenario has not OCCURRED, not that upstream now handles it - those are different
+        # claims. The original note here got that wrong.
+        try:  # marker so a silent event is still visible (see check script)
+            import time as _t
+            with open("/config/ef_ble_patch_events.log", "a") as _fh:
+                _fh.write(
+                    _t.strftime("%Y-%m-%d %H:%M:%S ")
+                    + f"FIX2-CAUGHT reconnects exhausted after {e.attempts} "
+                    + "attempts - ConfigEntryNotReady, HA will retry\n"
+                )
+        except Exception:
+            pass
+        _LOGGER.error(
+            "PATCH/notready: reconnects exhausted after %s attempts; raising "
+            "ConfigEntryNotReady so HA retries on backoff instead of giving up",
+            e.attempts,
+        )
+        raise ConfigEntryNotReady(
             translation_key="could_not_connect_no_retry",
             translation_placeholders={"attempts": str(e.attempts)},
         ) from e
