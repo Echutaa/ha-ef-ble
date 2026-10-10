@@ -900,6 +900,10 @@ _SENSORS: Final[dict[str, SensorEntityDescription]] = {
     ),
     "battery_power": power(precision=1),
     "inverter_temperature": temperature(),
+    # Raw mode fields, enabled on purpose so the recorder captures them across
+    # transfers. See the matching raw_field declarations in eflib/devices/delta_pro.py.
+    "discharge_type": raw(name="Discharge Type", entity_category=EntityCategory.DIAGNOSTIC),
+    "ac_pause_flag": raw(name="AC Pause Flag", entity_category=EntityCategory.DIAGNOSTIC),
     "inverter_current": current(precision=2),
     "inverter_power": power(precision=0),
     "inverter_voltage": voltage(precision=1),

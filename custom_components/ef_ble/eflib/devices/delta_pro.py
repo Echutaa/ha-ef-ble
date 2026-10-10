@@ -72,6 +72,13 @@ class Device(DeviceBase, RawDataProps):
         if x is None
         else round(((x - 4294967296) if x > 2147483647 else x) / 1000, 3),
     )
+    # Unmapped DirectInvDeltaHeartbeatPack fields, exposed to find a RELIABLE
+    # mains-vs-inverter signal. ac_input_power cannot distinguish pass-through from
+    # charging -- both read above zero -- which is why every mode inferred from it was
+    # wrong. Encodings are unknown, so these are raw on purpose: the recorder shows
+    # what they actually do across real transfers.
+    discharge_type = raw_field(rd_inv.discharge_type)
+    ac_pause_flag = raw_field(rd_inv.cfg_pause_flag)
     cell_temperature = raw_field(rd_bms.temp)
     max_cell_voltage = raw_field(rd_bms.max_cell_vol, pdiv(1000, 3))
     min_cell_voltage = raw_field(rd_bms.min_cell_vol, pdiv(1000, 3))
