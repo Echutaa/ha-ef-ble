@@ -5,6 +5,7 @@ from bleak.backends.device import BLEDevice
 from bleak.backends.scanner import AdvertisementData
 
 from ..devicebase import DeviceBase
+from ..entity import controls
 from ..model import (
     AllKitDetailData,
     DirectBmsMDeltaHeartbeatPack,
@@ -14,7 +15,7 @@ from ..model import (
     DirectPdHeartbeatPack,
 )
 from ..packet import Packet
-from ..props import Field
+from ..props import Field, computed_field
 from ..props.raw_data_field import dataclass_attr_mapper, raw_field
 from ..props.raw_data_props import RawDataProps
 from ..props.transforms import pdiv, pround
@@ -58,6 +59,15 @@ class Device(DeviceBase, RawDataProps):
     battery_charge_limit_min = raw_field(rd_ems.min_dsg_soc)
     battery_charge_limit_max = raw_field(rd_ems.max_charge_soc)
 
+    battery_voltage = raw_field(rd_bms.vol, pdiv(1000, 2))
+    battery_current = raw_field(rd_bms.amp, pdiv(1000, 3))
+    battery_input_power = raw_field(rd_bms.input_watts)
+    battery_output_power = raw_field(rd_bms.output_watts)
+    cell_temperature = raw_field(rd_bms.temp)
+    max_cell_voltage = raw_field(rd_bms.max_cell_vol, pdiv(1000, 3))
+    min_cell_voltage = raw_field(rd_bms.min_cell_vol, pdiv(1000, 3))
+    state_of_health = raw_field(rd_bms.soh)
+
     battery_1_enabled = Field[bool]()
     battery_1_battery_level = Field[float]()
     battery_1_sn = Field[str]()
@@ -71,6 +81,26 @@ class Device(DeviceBase, RawDataProps):
     ac_input_voltage = raw_field(rd_inv.ac_in_vol, pdiv(1000, 2))
     ac_input_current = raw_field(rd_inv.ac_in_amp, pdiv(1000, 2))
     ac_ports = raw_field(rd_inv.cfg_ac_enabled, lambda x: x == 1)
+    xboost = raw_field(rd_inv.cfg_ac_xboost, lambda x: x == 1)
+
+    ac_output_voltage = raw_field(rd_inv.inv_out_vol, pdiv(1000, 2))
+    ac_output_current = raw_field(rd_inv.inv_out_amp, pdiv(1000, 2))
+    ac_output_frequency = raw_field(rd_inv.inv_out_freq)
+    ac_input_frequency = raw_field(rd_inv.ac_in_freq)
+
+    inverter_temperature = raw_field(rd_inv.out_temp)
+    dc_input_temperature = raw_field(rd_inv.dc_in_temp)
+    fan_running = raw_field(rd_inv.fan_state, lambda x: x == 1)
+
+    error_code = raw_field(rd_inv.err_code)
+    ac_output_active = raw_field(
+        rd_inv.inv_out_vol, lambda x: None if x is None else x > 0
+    )
+    gfci_disabled = raw_field(rd_inv.cfg_gfci_enable, lambda x: x == 0)
+
+    @computed_field
+    def error_occurred(self) -> bool:
+        return bool(self.error_code)
 
     dc_input_power = raw_field(rd_mppt.in_watts, pdiv(10, 1))
     dc_input_voltage = raw_field(rd_mppt.in_vol, pdiv(10, 1))
@@ -88,6 +118,12 @@ class Device(DeviceBase, RawDataProps):
     dc_12v_port = raw_field(rd_mppt.car_state, lambda x: x == 1)
     energy_backup = raw_field(rd_pd.watth_is_config, lambda x: x == 1)
     energy_backup_battery_level = raw_field(rd_pd.backup_soc)
+
+    ac_input_energy = raw_field(rd_pd.chg_power_ac)
+    dc_input_energy = raw_field(rd_pd.chg_power_dc)
+    solar_input_energy = raw_field(rd_pd.chg_sun_power)
+    ac_output_energy = raw_field(rd_pd.dsg_power_ac)
+    dc_output_energy = raw_field(rd_pd.dsg_power_dc)
 
     # beep_mode: 0 = buzzer on, 1 = buzzer off (inverted in protocol)
     # buzzer = raw_field(rd_pd.beep_mode, lambda x: x == 0)
@@ -257,14 +293,17 @@ class Device(DeviceBase, RawDataProps):
             raise_on_failure=True,
         )
 
+    @controls.outlet(ac_ports)
     async def enable_ac_ports(self, enabled: bool):
         payload = bytes([1 if enabled else 0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
         await self._send_config_packet(0x04, 0x42, payload)
 
+    @controls.switch(xboost)
     async def enable_xboost(self, enabled: bool):
         payload = bytes([0xFF, 1 if enabled else 0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
         await self._send_config_packet(0x04, 0x42, payload)
 
+    @controls.switch(dc_12v_port)
     async def enable_dc_12v_port(self, enabled: bool):
         await self._send_config_packet(self._mppt_dst, 0x51, enabled.to_bytes())
 
@@ -285,6 +324,7 @@ class Device(DeviceBase, RawDataProps):
         )
         return True
 
+    @controls.switch(energy_backup)
     async def enable_energy_backup(self, enabled: bool):
         backup_level = self.energy_backup_battery_level or 50
         await self.set_energy_backup_battery_level(backup_level, enabled=enabled)

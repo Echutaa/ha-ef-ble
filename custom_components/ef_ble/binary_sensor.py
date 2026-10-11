@@ -137,6 +137,11 @@ _BINARY_SENSORS: Final[dict[str, BinarySensorEntityDescription]] = {
         state_attribute_fields=["error_code"],
     ),
     "bms_run_state": power(enabled=False, entity_category=EntityCategory.DIAGNOSTIC),
+    "ac_output_active": _make_desc(
+        BinarySensorDeviceClass.POWER,
+        state_attribute_fields=["error_code"],
+    ),
+    "gfci_disabled": problem(enabled=False, entity_category=EntityCategory.DIAGNOSTIC),
     # SHP2 backup channel binary sensors
     "ch{n}_backup_is_ready": shp2_channel(
         battery, "channel_backup_is_ready", enabled=False

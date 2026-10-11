@@ -11,7 +11,7 @@ class DirectBmsMDeltaHeartbeatPack(RawData):
     sys_ver: Annotated[int, "I", "sysVer"]
     soc: Annotated[int, "B", "soc"]
     vol: Annotated[int, "I", "vol"]
-    amp: Annotated[int, "I", "amp"]
+    amp: Annotated[int, "i", "amp"]
     temp: Annotated[int, "B", "temp"]
     open_bms_idx: Annotated[int, "B", "openBmsIdx"]
     design_cap: Annotated[int, "I", "designCap"]

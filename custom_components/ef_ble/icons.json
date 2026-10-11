@@ -41,6 +41,18 @@
         "state": {
           "off": "mdi:alert-circle-outline"
         }
+      },
+      "ac_output_active": {
+        "default": "mdi:sine-wave",
+        "state": {
+          "off": "mdi:power-plug-off"
+        }
+      },
+      "gfci_disabled": {
+        "default": "mdi:shield-off",
+        "state": {
+          "off": "mdi:shield-check"
+        }
       }
     },
     "sensor": {
@@ -67,6 +79,12 @@
       },
       "dc_input_energy": {
         "default": "mdi:current-dc"
+      },
+      "dc_output_energy": {
+        "default": "mdi:current-dc"
+      },
+      "solar_input_energy": {
+        "default": "mdi:solar-power-variant-outline"
       },
       "dc12v_output_power": {
         "default": "mdi:current-dc"

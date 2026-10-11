@@ -130,6 +130,26 @@ async def test_delta_pro_field_types_are_consistent(device, packet_sequence):
         Device.ac_charging_speed,
         Device.energy_backup_battery_level,
         Device.battery_1_battery_level,
+        Device.battery_voltage,
+        Device.battery_current,
+        Device.battery_input_power,
+        Device.battery_output_power,
+        Device.cell_temperature,
+        Device.max_cell_voltage,
+        Device.min_cell_voltage,
+        Device.state_of_health,
+        Device.ac_input_energy,
+        Device.dc_input_energy,
+        Device.solar_input_energy,
+        Device.ac_output_energy,
+        Device.dc_output_energy,
+        Device.ac_output_voltage,
+        Device.ac_output_current,
+        Device.ac_output_frequency,
+        Device.ac_input_frequency,
+        Device.inverter_temperature,
+        Device.dc_input_temperature,
+        Device.error_code,
     ]
 
     for field_name in numeric_fields:
@@ -141,10 +161,15 @@ async def test_delta_pro_field_types_are_consistent(device, packet_sequence):
 
     boolean_fields = [
         Device.ac_ports,
+        Device.xboost,
         Device.dc_12v_port,
         Device.energy_backup,
         Device.battery_1_enabled,
         Device.battery_2_enabled,
+        Device.fan_running,
+        Device.ac_output_active,
+        Device.gfci_disabled,
+        Device.error_occurred,
     ]
 
     for field_name in boolean_fields:
@@ -189,6 +214,7 @@ async def test_delta_pro_exact_values_from_known_packets(device, packet_sequence
         Device.ac_input_voltage: 0.0,
         Device.ac_input_current: 0.0,
         Device.ac_ports: True,
+        Device.xboost: False,
         Device.ac_charging_speed: 500,
         Device.ac_charging_power_max: 2900,
         Device.input_power: 0,
@@ -203,6 +229,30 @@ async def test_delta_pro_exact_values_from_known_packets(device, packet_sequence
         Device.battery_1_battery_level: 89.85,
         Device.battery_1_sn: "BATPACK001",
         Device.battery_2_enabled: False,
+        Device.battery_voltage: 49.8,
+        Device.battery_current: 0.0,
+        Device.battery_input_power: 0,
+        Device.battery_output_power: 200,
+        Device.cell_temperature: 25,
+        Device.max_cell_voltage: 3.41,
+        Device.min_cell_voltage: 3.38,
+        Device.state_of_health: 98,
+        Device.ac_input_energy: 0,
+        Device.dc_input_energy: 0,
+        Device.solar_input_energy: 0,
+        Device.ac_output_energy: 0,
+        Device.dc_output_energy: 200,
+        Device.ac_output_voltage: 230.0,
+        Device.ac_output_current: 0.9,
+        Device.ac_output_frequency: 50,
+        Device.ac_input_frequency: 0,
+        Device.inverter_temperature: 0,
+        Device.dc_input_temperature: 0,
+        Device.fan_running: False,
+        Device.error_code: 0,
+        Device.error_occurred: False,
+        Device.ac_output_active: True,  # fixture inv_out_vol=230000 → > 0
+        Device.gfci_disabled: True,
     }
 
     for field_name, expected_value in expected.items():
