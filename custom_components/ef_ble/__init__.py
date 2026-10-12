@@ -192,7 +192,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: DeviceConfigEntry) -> bo
                 "attempts": str(e.attempts),
             },
         )
-        raise ConfigEntryError(
+        # ConfigEntryError is terminal, so a device that was briefly unreachable stays
+        # dead until someone reloads it by hand. Every sibling handler here raises
+        # ConfigEntryNotReady and lets HA retry on its own backoff.
+        _LOGGER.error(
+            "Reconnects exhausted after %s attempts; raising ConfigEntryNotReady so "
+            "Home Assistant retries on its backoff instead of giving up",
+            e.attempts,
+        )
+        raise ConfigEntryNotReady(
             translation_key="could_not_connect_no_retry",
             translation_placeholders={"attempts": str(e.attempts)},
         ) from e
